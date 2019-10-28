@@ -11,38 +11,38 @@ import GameplayKit
 
 class GameScene: SKScene {
     
-//    private var label : SKLabelNode?
-//    private var spinnyNode : SKShapeNode?
-    private var ball : SKSpriteNode?
-    private var ground : SKSpriteNode?
-
+    private var label : SKLabelNode?
+    private var ballSP : SKSpriteNode?
+    private var hotdogSP : SKSpriteNode?
+    private var startButton : SKSpriteNode?
     override func didMove(to view: SKView) {
         
         
         let ballTexture = SKTexture(imageNamed: "ball")
-        let hotText = SKTexture(imageNamed: "hotdog")
         
-        let ball = SKSpriteNode(texture: ballTexture)
-        let hotdog = SKSpriteNode(texture: hotText)
-        
-        let ballpos = CGPoint(x:50, y:500)
-        let hotpos = CGPoint(x:0, y:-100)
-        
-        hotdog.position = hotpos
-        ball.position = ballpos
+        self.ballSP = self.childNode(withName: "ball") as? SKSpriteNode
+        self.hotdogSP = self.childNode(withName: "hotdog") as? SKSpriteNode
+        self.label = self.childNode(withName: "Title") as? SKLabelNode
+        self.startButton = self.childNode(withName: "StartButton") as? SKSpriteNode
+        let ball = self.ballSP!
+        let hotdog = self.hotdogSP!
+       
         
         
         ball.physicsBody = SKPhysicsBody(texture: ballTexture, alphaThreshold: 50, size: CGSize(width: ball.size.width, height: ball.size.height))
-        hotdog.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: hotdog.size.width, height: hotdog.size.height))
+        hotdog.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 100, height: 30))
+        
+        
         
         hotdog.physicsBody?.restitution = 1
         ball.physicsBody?.restitution = 0
         hotdog.physicsBody?.isDynamic = false
         hotdog.physicsBody?.affectedByGravity = false
         ball.physicsBody?.angularDamping = 1
-        self.addChild(hotdog)
-//        self.addChild(hotdog)
-        self.addChild(ball)
+        ball.physicsBody?.allowsRotation = false
+        ball.physicsBody?.affectedByGravity = false
+        
+        
 //        // Get label node from scene and store it for use later
 //        self.label = self.childNode(withName: "//helloLabel") as? SKLabelNode
 //        if let label = self.label {
@@ -92,10 +92,22 @@ class GameScene: SKScene {
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-//        if let label = self.label {
-//            label.run(SKAction.init(named: "Pulse")!, withKey: "fadeInOut")
-//        }
-//
+        
+        let touch = touches.first
+        
+        if let location = touch?.location(in: self){
+            let nodesArr = self.nodes(at: location)
+            if nodesArr.first?.name == "StartButton"{
+                self.label!.run(SKAction.fadeOut(withDuration: 0.75))
+                self.startButton!.run(SKAction.fadeOut(withDuration: 0.75))
+                let ball = self.ballSP!
+                ball.physicsBody?.affectedByGravity = true
+                ball.physicsBody?.applyImpulse(CGVector(dx: 0, dy: -9.8))
+                
+            }
+        }
+        
+
         for t in touches { self.touchDown(atPoint: t.location(in: self)) }
     }
     
