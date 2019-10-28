@@ -17,9 +17,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var startButton : SKSpriteNode?
     private var rightWall : SKSpriteNode?
     private var leftWall : SKSpriteNode?
+    
+    let wallVal:UInt32 = 0x1 << 2
+    let ballVal:UInt32 = 0x1 << 1
+    let dogVal:UInt32 = 0x1 << 0
+    
     override func didMove(to view: SKView) {
         
-        physicsWorld.contactDelegate = self
+        self.physicsWorld.contactDelegate = self
         let ballTexture = SKTexture(imageNamed: "ball")
         
         self.ballSP = self.childNode(withName: "ball") as? SKSpriteNode
@@ -38,17 +43,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         hotdog.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 250, height: 30))
         
         
+        self.leftWall!.physicsBody?.categoryBitMask = wallVal
+        hotdog.physicsBody?.categoryBitMask = dogVal
+        ball.physicsBody?.categoryBitMask = ballVal
         
         hotdog.physicsBody?.restitution = 0
         ball.physicsBody?.restitution = 1
-        hotdog.physicsBody?.collisionBitMask = 0x1
-        ball.physicsBody?.collisionBitMask = 0x1
+        
+        hotdog.physicsBody?.collisionBitMask = wallVal
+        ball.physicsBody?.collisionBitMask = wallVal
+        
         hotdog.physicsBody?.affectedByGravity = false
+        hotdog.physicsBody?.allowsRotation = false
         ball.physicsBody?.angularDamping = 1
         ball.physicsBody?.allowsRotation = false
         ball.physicsBody?.affectedByGravity = false
         
         
+        ball.physicsBody?.contactTestBitMask = dogVal
 //        // Get label node from scene and store it for use later
 //        self.label = self.childNode(withName: "//helloLabel") as? SKLabelNode
 //        if let label = self.label {
@@ -71,8 +83,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func didBegin(_ contact: SKPhysicsContact) {
-        if contact.bodyA.node?.name == "ball" && contact.bodyB.node?.name == "hotdog" || contact.bodyA.node?.name == "hotdog" && contact.bodyB.node?.name == "ball" {
-            self.ballSP!.physicsBody?.applyImpulse(CGVector(dx:0,dy:25))
+        let collision = contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask
+        if collision == ballVal | dogVal {
+            self.ballSP!.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 200))
         }
             
     }
@@ -140,8 +153,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
         let hotdog = self.hotdogSP!
-        
-       
+        if hotdog.position.x > 625{
+            hotdog.physicsBody?.velocity = CGVector(dx: -300, dy: 0)
+        } else if hotdog.position.x < 110 {
+            hotdog.physicsBody?.velocity = CGVector(dx: 300, dy: 0)
            }
+    }
 }
 
