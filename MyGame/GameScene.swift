@@ -11,14 +11,41 @@ import GameplayKit
 
 class GameScene: SKScene {
     
-    private var label : SKLabelNode?
-    private var spinnyNode : SKShapeNode?
-    private var ball : SKNode?
+//    private var label : SKLabelNode?
+//    private var spinnyNode : SKShapeNode?
+
     override func didMove(to view: SKView) {
         
-        self.ball = self.childNode(withName: "ball")
-        if (self.ball)!.position.x < 5{
-            (self.ball)!.run(SKAction.init(named: "fall")!)        }
+        
+        let ballTexture = SKTexture(imageNamed: "ball")
+        let hotText = SKTexture(imageNamed: "hotdog")
+        
+        let ball = SKSpriteNode(texture: ballTexture)
+        let hotdog = SKSpriteNode(texture: hotText)
+        
+        let ballpos = CGPoint(x:50, y:500)
+        let hotpos = CGPoint(x:100, y:20)
+        
+        hotdog.position = hotpos
+        ball.position = ballpos
+        
+        
+        ball.physicsBody = SKPhysicsBody(circleOfRadius: max(ball.size.width / 2,
+        ball.size.height / 2)-48)
+        hotdog.physicsBody = SKPhysicsBody(texture: hotText, size: CGSize(width: hotdog.size.width, height: hotdog.size.height))
+        var splinePoints = [CGPoint(x: 0, y: 0),
+        CGPoint(x: 100, y: 0)]
+        let ground = SKShapeNode(splinePoints: &splinePoints,
+                                 count: splinePoints.count)
+        ground.lineWidth = 5
+        ground.physicsBody = SKPhysicsBody(edgeChainFrom: ground.path!)
+        ground.physicsBody?.restitution = 1
+        ball.physicsBody?.restitution = 0
+        ground.physicsBody?.isDynamic = false
+
+        self.addChild(ground)
+//        self.addChild(hotdog)
+        self.addChild(ball)
 //        // Get label node from scene and store it for use later
 //        self.label = self.childNode(withName: "//helloLabel") as? SKLabelNode
 //        if let label = self.label {
@@ -47,7 +74,9 @@ class GameScene: SKScene {
 //            n.strokeColor = SKColor.green
 //            self.addChild(n)
 //        }
+        
     }
+        
     
     func touchMoved(toPoint pos : CGPoint) {
 //        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
@@ -91,3 +120,4 @@ class GameScene: SKScene {
        
            }
 }
+
