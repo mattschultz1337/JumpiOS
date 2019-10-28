@@ -13,6 +13,8 @@ class GameScene: SKScene {
     
 //    private var label : SKLabelNode?
 //    private var spinnyNode : SKShapeNode?
+    private var ball : SKSpriteNode?
+    private var ground : SKSpriteNode?
 
     override func didMove(to view: SKView) {
         
@@ -24,26 +26,21 @@ class GameScene: SKScene {
         let hotdog = SKSpriteNode(texture: hotText)
         
         let ballpos = CGPoint(x:50, y:500)
-        let hotpos = CGPoint(x:100, y:20)
+        let hotpos = CGPoint(x:0, y:-100)
         
         hotdog.position = hotpos
         ball.position = ballpos
         
         
-        ball.physicsBody = SKPhysicsBody(circleOfRadius: max(ball.size.width / 2,
-        ball.size.height / 2)-48)
-        hotdog.physicsBody = SKPhysicsBody(texture: hotText, size: CGSize(width: hotdog.size.width, height: hotdog.size.height))
-        var splinePoints = [CGPoint(x: 0, y: 0),
-        CGPoint(x: 100, y: 0)]
-        let ground = SKShapeNode(splinePoints: &splinePoints,
-                                 count: splinePoints.count)
-        ground.lineWidth = 5
-        ground.physicsBody = SKPhysicsBody(edgeChainFrom: ground.path!)
-        ground.physicsBody?.restitution = 1
+        ball.physicsBody = SKPhysicsBody(texture: ballTexture, alphaThreshold: 50, size: CGSize(width: ball.size.width, height: ball.size.height))
+        hotdog.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: hotdog.size.width, height: hotdog.size.height))
+        
+        hotdog.physicsBody?.restitution = 1
         ball.physicsBody?.restitution = 0
-        ground.physicsBody?.isDynamic = false
-
-        self.addChild(ground)
+        hotdog.physicsBody?.isDynamic = false
+        hotdog.physicsBody?.affectedByGravity = false
+        ball.physicsBody?.angularDamping = 1
+        self.addChild(hotdog)
 //        self.addChild(hotdog)
         self.addChild(ball)
 //        // Get label node from scene and store it for use later
