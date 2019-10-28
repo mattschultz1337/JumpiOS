@@ -17,7 +17,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var startButton : SKSpriteNode?
     private var rightWall : SKSpriteNode?
     private var leftWall : SKSpriteNode?
-    
+    private var score : Int?
+    private var scoreLabel : SKLabelNode?
     let wallVal:UInt32 = 0x1 << 2
     let ballVal:UInt32 = 0x1 << 1
     let dogVal:UInt32 = 0x1 << 0
@@ -36,11 +37,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let ball = self.ballSP!
         let hotdog = self.hotdogSP!
         self.rightWall?.physicsBody?.collisionBitMask = 0x1
-        
-        
+        self.score = 0
+        self.scoreLabel = self.childNode(withName: "score") as? SKLabelNode
         
         ball.physicsBody = SKPhysicsBody(texture: ballTexture, alphaThreshold: 50, size: CGSize(width: ball.size.width, height: ball.size.height))
-        hotdog.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 250, height: 30))
+        hotdog.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 175, height: 30))
         
         
         self.leftWall!.physicsBody?.categoryBitMask = wallVal
@@ -83,10 +84,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func didBegin(_ contact: SKPhysicsContact) {
-        let collision = contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask
-        if collision == ballVal | dogVal {
-            self.ballSP!.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 200))
-        }
+        self.ballSP!.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 500))
+        self.score = self.score! + 1
             
     }
     func touchDown(atPoint pos : CGPoint) {
@@ -129,7 +128,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 hotdog.physicsBody?.applyImpulse(CGVector(dx:5, dy: 0))
                 ball.physicsBody?.affectedByGravity = true
                 ball.physicsBody?.applyImpulse(CGVector(dx: 0, dy: -9.8))
-                hotdog.physicsBody?.velocity = CGVector(dx: 300, dy: 0)
+                hotdog.physicsBody?.velocity = CGVector(dx: 700, dy: 0)
             }
         }
         
@@ -152,11 +151,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
+        self.scoreLabel?.text = String(describing: self.score)
         let hotdog = self.hotdogSP!
         if hotdog.position.x > 625{
-            hotdog.physicsBody?.velocity = CGVector(dx: -300, dy: 0)
-        } else if hotdog.position.x < 110 {
-            hotdog.physicsBody?.velocity = CGVector(dx: 300, dy: 0)
+            hotdog.physicsBody?.velocity = CGVector(dx: -500, dy: 0)
+        } else if hotdog.position.x < 135 {
+            hotdog.physicsBody?.velocity = CGVector(dx: 500, dy: 0)
            }
     }
 }
