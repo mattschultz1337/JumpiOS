@@ -9,34 +9,40 @@
 import SpriteKit
 import GameplayKit
 
-class GameScene: SKScene {
+class GameScene: SKScene, SKPhysicsContactDelegate {
     
     private var label : SKLabelNode?
     private var ballSP : SKSpriteNode?
     private var hotdogSP : SKSpriteNode?
     private var startButton : SKSpriteNode?
+    private var rightWall : SKSpriteNode?
+    private var leftWall : SKSpriteNode?
     override func didMove(to view: SKView) {
         
-        
+        physicsWorld.contactDelegate = self
         let ballTexture = SKTexture(imageNamed: "ball")
         
         self.ballSP = self.childNode(withName: "ball") as? SKSpriteNode
         self.hotdogSP = self.childNode(withName: "hotdog") as? SKSpriteNode
         self.label = self.childNode(withName: "Title") as? SKLabelNode
         self.startButton = self.childNode(withName: "StartButton") as? SKSpriteNode
+        self.leftWall = self.childNode(withName: "leftWall") as? SKSpriteNode
+        self.rightWall = self.childNode(withName: "rightWall") as? SKSpriteNode
         let ball = self.ballSP!
         let hotdog = self.hotdogSP!
-       
+        self.rightWall?.physicsBody?.collisionBitMask = 0x1
+        
         
         
         ball.physicsBody = SKPhysicsBody(texture: ballTexture, alphaThreshold: 50, size: CGSize(width: ball.size.width, height: ball.size.height))
-        hotdog.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 100, height: 30))
+        hotdog.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 250, height: 30))
         
         
         
-        hotdog.physicsBody?.restitution = 1
-        ball.physicsBody?.restitution = 0
-        hotdog.physicsBody?.isDynamic = false
+        hotdog.physicsBody?.restitution = 0
+        ball.physicsBody?.restitution = 1
+        hotdog.physicsBody?.collisionBitMask = 0x1
+        ball.physicsBody?.collisionBitMask = 0x1
         hotdog.physicsBody?.affectedByGravity = false
         ball.physicsBody?.angularDamping = 1
         ball.physicsBody?.allowsRotation = false
@@ -64,7 +70,12 @@ class GameScene: SKScene {
 //        }
     }
     
-    
+    func didBegin(_ contact: SKPhysicsContact) {
+        if contact.bodyA.node?.name == "ball" && contact.bodyB.node?.name == "hotdog" || contact.bodyA.node?.name == "hotdog" && contact.bodyB.node?.name == "ball" {
+            self.ballSP!.physicsBody?.applyImpulse(CGVector(dx:0,dy:25))
+        }
+            
+    }
     func touchDown(atPoint pos : CGPoint) {
 //        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
 //            n.position = pos
@@ -101,9 +112,11 @@ class GameScene: SKScene {
                 self.label!.run(SKAction.fadeOut(withDuration: 0.75))
                 self.startButton!.run(SKAction.fadeOut(withDuration: 0.75))
                 let ball = self.ballSP!
+                let hotdog = self.hotdogSP!
+                hotdog.physicsBody?.applyImpulse(CGVector(dx:5, dy: 0))
                 ball.physicsBody?.affectedByGravity = true
                 ball.physicsBody?.applyImpulse(CGVector(dx: 0, dy: -9.8))
-                
+                hotdog.physicsBody?.velocity = CGVector(dx: 300, dy: 0)
             }
         }
         
@@ -126,6 +139,8 @@ class GameScene: SKScene {
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
+        let hotdog = self.hotdogSP!
+        
        
            }
 }
