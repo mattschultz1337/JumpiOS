@@ -17,6 +17,8 @@
 		75C6654B23633901009084BF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75C6654923633901009084BF /* LaunchScreen.storyboard */; };
 		75C6655623633901009084BF /* MyGameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75C6655523633901009084BF /* MyGameTests.swift */; };
 		75C6656123633901009084BF /* MyGameUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75C6656023633901009084BF /* MyGameUITests.swift */; };
+		75CEA6FA23688FDE0073700F /* Loser.sks in Resources */ = {isa = PBXBuildFile; fileRef = 75CEA6F923688FDE0073700F /* Loser.sks */; };
+		75CEA6FC2368952F0073700F /* Loser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75CEA6FB2368952F0073700F /* Loser.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +55,8 @@
 		75C6655C23633901009084BF /* MyGameUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MyGameUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		75C6656023633901009084BF /* MyGameUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyGameUITests.swift; sourceTree = "<group>"; };
 		75C6656223633901009084BF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		75CEA6F923688FDE0073700F /* Loser.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Loser.sks; sourceTree = "<group>"; };
+		75CEA6FB2368952F0073700F /* Loser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loser.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +109,8 @@
 			children = (
 				75C6653A23633900009084BF /* AppDelegate.swift */,
 				75C6653C23633900009084BF /* GameScene.sks */,
+				75CEA6F923688FDE0073700F /* Loser.sks */,
+				75CEA6FB2368952F0073700F /* Loser.swift */,
 				75C6653E23633900009084BF /* Actions.sks */,
 				75C6654023633900009084BF /* GameScene.swift */,
 				75C6654223633900009084BF /* GameViewController.swift */,
@@ -243,6 +249,7 @@
 				75C6654823633901009084BF /* Assets.xcassets in Resources */,
 				75C6654B23633901009084BF /* LaunchScreen.storyboard in Resources */,
 				75C6653F23633900009084BF /* Actions.sks in Resources */,
+				75CEA6FA23688FDE0073700F /* Loser.sks in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -270,6 +277,7 @@
 				75C6654123633900009084BF /* GameScene.swift in Sources */,
 				75C6654323633900009084BF /* GameViewController.swift in Sources */,
 				75C6653B23633900009084BF /* AppDelegate.swift in Sources */,
+				75CEA6FC2368952F0073700F /* Loser.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

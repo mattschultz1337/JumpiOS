@@ -19,13 +19,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var leftWall : SKSpriteNode?
     private var bottomWall : SKSpriteNode?
     private var score : Int?
+    private var lose : Bool?
     private var scoreLabel : SKLabelNode?
     let wallVal:UInt32 = 0x1 << 2
     let ballVal:UInt32 = 0x1 << 1
     let dogVal:UInt32 = 0x1 << 0
     
     override func didMove(to view: SKView) {
-        
+        self.lose = false
         self.physicsWorld.contactDelegate = self
         let ballTexture = SKTexture(imageNamed: "ball")
         
@@ -53,7 +54,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         hotdog.physicsBody?.restitution = 0
         ball.physicsBody?.restitution = 1
-        
+        self.bottomWall!.physicsBody?.restitution = 1
         hotdog.physicsBody?.collisionBitMask = wallVal
         ball.physicsBody?.collisionBitMask = wallVal
         
@@ -63,14 +64,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ball.physicsBody?.allowsRotation = false
         ball.physicsBody?.affectedByGravity = false
         
-        
+        bottomWall?.physicsBody?.contactTestBitMask = ballVal
         ball.physicsBody?.contactTestBitMask = dogVal
 
     }
     
     func didBegin(_ contact: SKPhysicsContact) {
-        self.ballSP!.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 500))
-        self.score = self.score! + 1
+        if contact.bodyA.node?.name == "ball" && contact.bodyB.node?.name == "bottomWall"{
+            self.lose = true
+            contact.bodyA.node?.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
+        } else if contact.bodyA.node?.name == "bottomWall" && contact.bodyB.node?.name == "ball"{
+            self.lose = true
+            contact.bodyB.node?.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
+        } else {
+            self.ballSP!.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 300))
+            self.score = self.score! + 1
+        }
             
     }
     
@@ -81,7 +90,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if let location = touch?.location(in: self){
             
             let nodesArr = self.nodes(at: location)
-            if nodesArr.first?.name == "StartButton"{
+            if nodesArr.first?.name == "StartButton" && !self.lose!{
                 self.label!.run(SKAction.fadeOut(withDuration: 0.75))
                 self.startButton!.run(SKAction.fadeOut(withDuration: 0.75))
                 let ball = self.ballSP!
@@ -91,7 +100,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 ball.physicsBody?.applyImpulse(CGVector(dx: 0, dy: -9.8))
                 ball.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
                 hotdog.physicsBody?.velocity = CGVector(dx: 300, dy: 0)
-            } else {
+            } else if nodesArr.first?.name == "StartButton" && self.lose!{
+                let fade = SKTransition.fade(withDuration: 1)
+                let game = SKScene(fileNamed: "GameScene")
+                self.view?.presentScene(game!, transition: fade)
+                
+                
+                
+            }else {
                self.ballSP!.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
                 self.ballSP!.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 300))
             }
@@ -102,6 +118,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
+        
+        if self.lose! {
+            let fade = SKTransition.fade(withDuration: 1)
+            let loser = SKScene(fileNamed: "Loser")
+            let loserscore =          loser!.childNode(withName: "loserScore") as? SKLabelNode
+            loserscore?.text = "\(self.score!)"
+            self.view?.presentScene(loser!, transition: fade)
+            
+        }
         self.scoreLabel?.text = "\(self.score!)"
         let hotdog = self.hotdogSP!
         if hotdog.position.x > 625{
